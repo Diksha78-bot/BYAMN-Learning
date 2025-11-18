@@ -279,12 +279,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(() => {
                     console.log('Course completion analytics updated');
                     
+                    // Show completion celebration
+                    showCompletionCelebration();
+                    
                     // Check for new achievements
                     checkForNewAchievements();
                 })
                 .catch(error => {
                     console.error('Error updating course completion analytics:', error);
+                // Still show celebration even if analytics fail
+                    showCompletionCelebration();
                 });
+        } else {
+            // Fallback: show celebration even if user/course data is incomplete
+            showCompletionCelebration();
         }
     }
     
@@ -332,6 +340,17 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Check if course is completed and show certificate name modal if needed
         checkForCertificateName();
+        
+        // Show celebration if course is completed and user hasn't seen it
+        if (currentEnrollment && currentEnrollment.progress === 100) {
+            const hasSeenCelebration = localStorage.getItem(`celebration_shown_${currentCourse.id}`);
+            if (!hasSeenCelebration) {
+                setTimeout(() => {
+                    showCompletionCelebration();
+                    localStorage.setItem(`celebration_shown_${currentCourse.id}`, 'true');
+                }, 1000);
+            }
+        }
     }
     
     // Render lessons list
@@ -540,6 +559,21 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Re-render lessons list to update active lesson
         renderLessonsList();
+        
+        // Show certificate button and celebration if course is completed
+        if (currentEnrollment && currentEnrollment.progress === 100) {
+            certificateBtn.classList.remove('hidden');
+            certificateBtn.href = `certificate.html?courseId=${currentCourse.id}`;
+            
+            // Optional: Show celebration when navigating to a completed course
+            const hasSeenCelebration = localStorage.getItem(`celebration_shown_${currentCourse.id}`);
+            if (!hasSeenCelebration) {
+                setTimeout(() => {
+                    showCompletionCelebration();
+                    localStorage.setItem(`celebration_shown_${currentCourse.id}`, 'true');
+                }, 1000);
+            }
+        }
     }
     
     // Create YouTube player
@@ -908,6 +942,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                         
                         // Check if we need to ask for certificate name
                         checkForCertificateName();
+                        
+                        // Show completion celebration
+                        showCompletionCelebration();
                     }
                 }
                 
@@ -1302,3 +1339,233 @@ let certificateModal = null;
 let certificateNameInput = null;
 let certificateSaveBtn = null;
 let certificateSkipBtn = null;
+
+// Completion Celebration Functions
+
+// Add this function to your course-player.js file
+function showCompletionCelebration() {
+    // Create celebration container
+    const celebrationContainer = document.createElement('div');
+    celebrationContainer.className = 'completion-celebration';
+    document.body.appendChild(celebrationContainer);
+
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'celebration-overlay';
+    document.body.appendChild(overlay);
+
+    // Create confetti
+    createConfetti(celebrationContainer);
+    
+    // Create fireworks
+    createFireworks(celebrationContainer);
+    
+    // Create floating emojis
+    createFloatingEmojis(celebrationContainer);
+    
+    // Show celebration message after a short delay
+    setTimeout(() => {
+        showCelebrationMessage();
+    }, 1000);
+    
+    // Add progress bar celebration effect
+    const progressBar = document.getElementById('progress-bar');
+    if (progressBar) {
+        progressBar.classList.add('progress-celebration');
+        setTimeout(() => {
+            progressBar.classList.remove('progress-celebration');
+        }, 2000);
+    }
+    
+    // Show achievement badge if any new achievements
+    setTimeout(() => {
+        showAchievementBadge();
+    }, 3000);
+    
+    // Auto-remove celebration after 8 seconds
+    setTimeout(() => {
+        cleanupCelebration(celebrationContainer, overlay);
+    }, 8000);
+}
+
+// Confetti creation function
+function createConfetti(container) {
+    const confettiCount = 150;
+    
+    for (let i = 0; i < confettiCount; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        
+        // Random positioning and animation delays
+        const left = Math.random() * 100;
+        const delay = Math.random() * 2;
+        const duration = 2 + Math.random() * 2;
+        
+        confetti.style.left = `${left}vw`;
+        confetti.style.animationDelay = `${delay}s`;
+        confetti.style.animationDuration = `${duration}s`;
+        
+        container.appendChild(confetti);
+    }
+}
+
+// Fireworks creation function
+function createFireworks(container) {
+    const fireworkCount = 10;
+    
+    for (let i = 0; i < fireworkCount; i++) {
+        setTimeout(() => {
+            createFirework(container);
+        }, i * 300);
+    }
+}
+
+function createFirework(container) {
+    const particles = 12;
+    const centerX = 25 + Math.random() * 50;
+    const centerY = 25 + Math.random() * 50;
+    
+    for (let i = 0; i < particles; i++) {
+        const firework = document.createElement('div');
+        firework.className = 'firework';
+        
+        const angle = (i / particles) * Math.PI * 2;
+        const distance = 50 + Math.random() * 100;
+        const xEnd = Math.cos(angle) * distance;
+        const yEnd = Math.sin(angle) * distance;
+        
+        firework.style.setProperty('--x', `${centerX}vw`);
+        firework.style.setProperty('--y', `${centerY}vh`);
+        firework.style.setProperty('--x-end', `${xEnd}px`);
+        firework.style.setProperty('--y-end', `${yEnd}px`);
+        firework.style.background = getRandomColor();
+        
+        container.appendChild(firework);
+        
+        // Remove firework after animation
+        setTimeout(() => {
+            if (firework.parentNode) {
+                firework.parentNode.removeChild(firework);
+            }
+        }, 1500);
+    }
+}
+
+// Floating emojis creation function
+function createFloatingEmojis(container) {
+    const emojis = ['🎉', '🎊', '🥳', '🎓', '🏆', '⭐', '🚀', '💫', '👏', '🔥'];
+    const emojiCount = 20;
+    
+    for (let i = 0; i < emojiCount; i++) {
+        const emoji = document.createElement('div');
+        emoji.className = 'floating-emoji';
+        emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        
+        const left = Math.random() * 100;
+        const delay = Math.random() * 2;
+        const duration = 2 + Math.random() * 2;
+        
+        emoji.style.left = `${left}vw`;
+        emoji.style.animationDelay = `${delay}s`;
+        emoji.style.animationDuration = `${duration}s`;
+        emoji.style.fontSize = `${1 + Math.random() * 2}rem`;
+        
+        container.appendChild(emoji);
+    }
+}
+
+// Celebration message function
+function showCelebrationMessage() {
+    const message = document.createElement('div');
+    message.className = 'celebration-message';
+    message.innerHTML = `
+        <button class="close-celebration" onclick="this.parentElement.remove()">×</button>
+        <h2>🎓 Course Completed! 🎓</h2>
+        <p>Congratulations! You've successfully completed the course!</p>
+        <div class="celebration-actions">
+            <button class="celebration-btn primary" onclick="viewCertificate()">View Certificate</button>
+            <button class="celebration-btn secondary" onclick="this.closest('.celebration-message').remove()">Continue Learning</button>
+        </div>
+    `;
+    
+    document.body.appendChild(message);
+    
+    // Add click outside to close
+    message.addEventListener('click', (e) => {
+        if (e.target === message) {
+            message.remove();
+        }
+    });
+}
+
+// Achievement badge function
+function showAchievementBadge() {
+    const achievements = [
+        { icon: '🏆', title: 'Course Master', description: 'Completed your first course!' },
+        { icon: '⚡', title: 'Fast Learner', description: 'Finished course ahead of time' },
+        { icon: '💪', title: 'Dedicated Learner', description: 'Perfect attendance streak' }
+    ];
+    
+    const randomAchievement = achievements[Math.floor(Math.random() * achievements.length)];
+    
+    const badge = document.createElement('div');
+    badge.className = 'achievement-badge';
+    badge.innerHTML = `
+        <div class="badge-icon">${randomAchievement.icon}</div>
+        <div class="badge-content">
+            <h4>${randomAchievement.title}</h4>
+            <p>${randomAchievement.description}</p>
+        </div>
+    `;
+    
+    document.body.appendChild(badge);
+    
+    // Auto-remove badge after 5 seconds
+    setTimeout(() => {
+        if (badge.parentNode) {
+            badge.remove();
+        }
+    }, 5000);
+}
+
+// Helper function for random colors
+function getRandomColor() {
+    const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+// Cleanup function
+function cleanupCelebration(container, overlay) {
+    if (container && container.parentNode) {
+        container.parentNode.removeChild(container);
+    }
+    if (overlay && overlay.parentNode) {
+        overlay.parentNode.removeChild(overlay);
+    }
+    
+    // Remove any remaining celebration messages
+    const messages = document.querySelectorAll('.celebration-message, .achievement-badge');
+    messages.forEach(element => {
+        if (element.parentNode) {
+            element.remove();
+        }
+    });
+}
+
+// View certificate function
+function viewCertificate() {
+    const courseId = new URLSearchParams(window.location.search).get('courseId');
+    if (courseId) {
+        window.location.href = `certificate.html?courseId=${courseId}`;
+    }
+}
+
+// Global function for closing celebration
+window.closeCelebration = function() {
+    const elements = document.querySelectorAll('.completion-celebration, .celebration-overlay, .celebration-message, .achievement-badge');
+    elements.forEach(element => {
+        if (element.parentNode) {
+            element.remove();
+        }
+    });
+};
