@@ -1,0 +1,317 @@
+/* Course Completion Celebration Styles */
+.completion-celebration {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+/* Confetti Styles */
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    opacity: 0;
+    animation: confetti-fall 3s ease-in-out forwards;
+}
+
+.confetti:nth-child(5n) { background-color: #ff0000; }
+.confetti:nth-child(5n+1) { background-color: #00ff00; }
+.confetti:nth-child(5n+2) { background-color: #0000ff; }
+.confetti:nth-child(5n+3) { background-color: #ffff00; }
+.confetti:nth-child(5n+4) { background-color: #ff00ff; }
+
+@keyframes confetti-fall {
+    0% {
+        opacity: 1;
+        transform: translateY(-100px) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(100vh) rotate(360deg);
+    }
+}
+
+/* Celebration Message Styles */
+.celebration-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem 3rem;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    z-index: 10000;
+    animation: message-popup 2s ease-out forwards;
+    pointer-events: auto;
+    min-width: 300px;
+}
+
+.celebration-message h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.celebration-message p {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+}
+
+.celebration-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.celebration-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.celebration-btn.primary {
+    background: white;
+    color: #667eea;
+}
+
+.celebration-btn.secondary {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: 2px solid white;
+}
+
+.celebration-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+@keyframes message-popup {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Fireworks Effect */
+.firework {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    animation: firework-explode 1.5s ease-out forwards;
+}
+
+@keyframes firework-explode {
+    0% {
+        transform: translate(var(--x), var(--y)) scale(0);
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--x-end), var(--y-end)) scale(1);
+        opacity: 0;
+    }
+}
+
+/* Floating Emojis */
+.floating-emoji {
+    position: absolute;
+    font-size: 2rem;
+    animation: float-up 3s ease-in forwards;
+    opacity: 0;
+}
+
+@keyframes float-up {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Progress Bar Celebration */
+.progress-celebration {
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-celebration::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255,255,255,0.8), 
+        transparent
+    );
+    animation: progress-shine 2s ease-in-out;
+}
+
+@keyframes progress-shine {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Achievement Badge Popup */
+.achievement-badge {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    z-index: 10000;
+    animation: badge-slide-in 0.8s ease-out forwards;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 280px;
+}
+
+.achievement-badge .badge-icon {
+    font-size: 2rem;
+    animation: bounce 2s infinite;
+}
+
+.achievement-badge .badge-content h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.achievement-badge .badge-content p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+@keyframes badge-slide-in {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .celebration-message {
+        padding: 1.5rem 2rem;
+        min-width: 280px;
+        margin: 1rem;
+    }
+    
+    .celebration-message h2 {
+        font-size: 2rem;
+    }
+    
+    .celebration-actions {
+        flex-direction: column;
+    }
+    
+    .achievement-badge {
+        min-width: 250px;
+        right: 10px;
+        left: 10px;
+    }
+}
+
+/* Celebration Overlay */
+.celebration-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 9998;
+    animation: overlay-fade 0.5s ease-out forwards;
+}
+
+@keyframes overlay-fade {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Close Button */
+.close-celebration {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.close-celebration:hover {
+    background: rgba(255,255,255,0.3);
+    transform: rotate(90deg);
+}
